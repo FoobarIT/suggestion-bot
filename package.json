@@ -1,0 +1,23 @@
+{
+  "name": "suggestion-bot",
+  "version": "1.0.0",
+  "description": "Simple suggestion bot to learning about Discord API and Discord.js",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FoobarIT/suggestion-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FoobarIT/suggestion-bot/issues"
+  },
+  "homepage": "https://github.com/FoobarIT/suggestion-bot#readme",
+  "dependencies": {
+    "discord.js": "^14.3.0",
+    "path": "^0.12.7"
+  }
+}
