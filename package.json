@@ -18,6 +18,9 @@
   "homepage": "https://github.com/FoobarIT/suggestion-bot#readme",
   "dependencies": {
     "discord.js": "^14.3.0",
-    "path": "^0.12.7"
+    "dotenv": "^16.0.1",
+    "path": "^0.12.7",
+    "sequelize": "^6.21.4",
+    "sqlite3": "^5.0.11"
   }
 }

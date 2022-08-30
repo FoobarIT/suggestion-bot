@@ -6,7 +6,7 @@
  * @version: 1.0.0
  * @repository: to define 
  **/
-
+require('dotenv').config();
 const Discord = require('discord.js');
 const {GatewayIntentBits, Collection} = require('discord.js');
 const { token} = require('./bot-config')
@@ -29,7 +29,6 @@ const client = new Discord.Client({
 client.commands = new Collection();
 
 const init = async () => {
-
     // Then we load events, which will include our message and ready event.
     client.events = {}
     fs.readdir('./events', (err, files) => {
@@ -52,7 +51,6 @@ const init = async () => {
         const command = require(`./commands/${file}`);
         client.commands.set(command.name, command);
     }
-
     
     // Login to Discord with your client's token
     client.login(token);

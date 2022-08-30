@@ -2,10 +2,8 @@
  * Bot ready event handler
  */
 
-module.exports = (client) => {
-    
-        console.log(`Logged in as ${client.user.tag}!`);
-    
 
-    
+
+module.exports = async (client) => {
+        console.log('Ready!')
 };

@@ -1,3 +1,4 @@
 /node_modules
 INFOS.md
 bot-config.js
+.env
