@@ -1,6 +1,6 @@
 const models = require('../models/')
 const levenshtein = require('../utils/levenshtein')
-
+const log = require('../utils/logger')
 module.exports = {
     name: 'suggest',
     execute: async (client, message, args) => {
@@ -9,6 +9,7 @@ module.exports = {
         let getSuggest = args.slice(0, args.length).join(' ') 
         if (getSuggest.length < 25) return message.reply(`Be more specific in your suggestion, ${message.author}!`)
         
+        let setupExist = await models.Guild.findOne({where: {guildId: message.guild.id}})
         
         // Fetch all suggest in database to let levenshtein check similarity.
         // If find similarity rate 0.8 the bot auto cancel the suggestion.
@@ -16,11 +17,14 @@ module.exports = {
             let getAllSuggest = await models.Suggest.findAll({where: {guildId: message.guild.id}})
             if (getAllSuggest.length > 0) {
                 getAllSuggest.forEach(async (suggest) => {
-    
+                    console.log('User Suggest:'+getSuggest, 'Db:'+suggest.suggest)
                     let similarity = levenshtein(getSuggest, suggest.suggest)
                     console.log(similarity)
-                    if (similarity > 0.8) return message.reply(
-                        `Sorry the bot has determined that your suggestion has already been proposed by **${suggest.nickname}**, ${message.author}!\n**[Trace]:** _Rating ${similarity}._`)
+                    console.log(similarity >= 0.5)
+                    if (similarity >= 0.5) {    
+                        log(client, setupExist.channelId, 'reject', suggest, message, similarity)
+                        return message.reply(`Sorry ${message.author} the bot has determined that your suggestion has already been proposed by **${suggest.nickname}**`)
+                    } 
                 })
             }
             console.log(getSuggest)
@@ -32,6 +36,7 @@ module.exports = {
         
         client.on('messageReactionAdd', async (reaction, user) => {
             const GET_ADMIN_ROLE = await message.guild.roles.cache.get('1014276555922485318').members.map(m => m.user.id);
+
             if (GET_ADMIN_ROLE.includes(user.id)) {
                 if (reaction.emoji.name === '📥') {
                     try {
