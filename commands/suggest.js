@@ -9,9 +9,11 @@ module.exports = {
         let getSuggest = args.slice(0, args.length).join(' ') 
         if (getSuggest.length < 25) return message.reply(`Be more specific in your suggestion, ${message.author}!`)
         
-        let guild = message.guild.id
+        
+        // Fetch all suggest in database to let levenshtein check similarity.
+        // If find similarity rate 0.8 the bot auto cancel the suggestion.
         try {
-            let getAllSuggest = await models.Suggest.findAll({where: {guildId: guild}})
+            let getAllSuggest = await models.Suggest.findAll({where: {guildId: message.guild.id}})
             if (getAllSuggest.length > 0) {
                 getAllSuggest.forEach(async (suggest) => {
     
