@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Suggest.init({
+    guildId: DataTypes.STRING,
     userId: DataTypes.INTEGER,
     nickname: DataTypes.STRING,
     suggest: DataTypes.STRING

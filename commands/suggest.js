@@ -1,18 +1,30 @@
-
-
 const models = require('../models/')
+const levenshtein = require('../utils/levenshtein')
 
 module.exports = {
     name: 'suggest',
     execute: async (client, message, args) => {
         if (!args.length) return message.reply(`You didn't provide any suggestion, ${message.author}!`);
 
-        
-        const temp = await models.Suggest.findAll()
-        //console.log(temp)
-
         let getSuggest = args.slice(0, args.length).join(' ') 
-        if (getSuggest.length < 40) return message.reply(`Be more specific in your suggestion, ${message.author}!`)
+        if (getSuggest.length < 25) return message.reply(`Be more specific in your suggestion, ${message.author}!`)
+        
+        let guild = message.guild.id
+        try {
+            let getAllSuggest = await models.Suggest.findAll({where: {guildId: guild}})
+            if (getAllSuggest.length > 0) {
+                getAllSuggest.forEach(async (suggest) => {
+    
+                    let similarity = levenshtein(getSuggest, suggest.suggest)
+                    console.log(similarity)
+                    if (similarity > 0.8) return message.reply(
+                        `Sorry the bot has determined that your suggestion has already been proposed by **${suggest.nickname}**, ${message.author}!\n**[Trace]:** _Rating ${similarity}._`)
+                })
+            }
+            console.log(getSuggest)
+        } catch(err) {
+            console.log(err)
+        }
 
         await message.react('📥').then(message.react('📤'))
         
@@ -22,6 +34,7 @@ module.exports = {
                 if (reaction.emoji.name === '📥') {
                     try {
                         await models.Suggest.create({
+                            guildId: message.guild.id,
                             userId: message.author.id,
                             nickname: message.author.username,
                             suggest: getSuggest
